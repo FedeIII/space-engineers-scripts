@@ -8,9 +8,11 @@ Color greenColor =  new Color(0, 150, 0, 255);
 Color yellowColor =  new Color(150, 150, 0, 255);
 Color orangeColor =  new Color(150, 75, 0, 255);
 Color redColor =  new Color(150, 0, 0, 255);
-IMyTextSurface screen1;
-IMyTextSurface screen2;
-IMyTextSurface screen3;
+struct Screen {
+    public string name;
+    public int index;
+}
+List<IMyTextSurface> surfaces = new List<IMyTextSurface>();
 IMyAirVent airVent;
 List <IMyBatteryBlock> batteries = new List<IMyBatteryBlock>();
 List <IMyGasTank> tanks = new List<IMyGasTank>();
@@ -18,20 +20,21 @@ List <IMyGasTank> tanks = new List<IMyGasTank>();
 public Program() {
     Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
-    IMyTextSurfaceProvider block1 = GridTerminalSystem.GetBlockWithName("Command LCD Top") as IMyTextSurfaceProvider;
-    screen1 = block1.GetSurface(0);
+    var screens = new Screen[4];
+    screens[0] = new Screen(){ name = "Command LCD Top", index = 0 };
+    screens[1] = new Screen(){ name = "FSS - Commander Control Chair", index = 0 };
+    screens[2] = new Screen(){ name = "Command LCD Left", index = 0 };
+    screens[3] = new Screen(){ name = "Station Status Logic", index = 0 };
 
-    IMyTextSurfaceProvider block2 = GridTerminalSystem.GetBlockWithName("FSS - Commander Control Chair") as IMyTextSurfaceProvider;
-    screen2 = block2.GetSurface(0);
-
-    IMyTextSurfaceProvider block3 = GridTerminalSystem.GetBlockWithName("Command LCD Left") as IMyTextSurfaceProvider;
-    screen3 = block3.GetSurface(0);
+    foreach(var screen in screens) {
+        IMyTextSurfaceProvider block = GridTerminalSystem.GetBlockWithName(screen.name) as IMyTextSurfaceProvider;
+        IMyTextSurface surface = block.GetSurface(screen.index);
+        
+        surfaces.Add(surface);
+        PrepareTextSurfaceForSprites(surface);
+    }
 
     airVent = GridTerminalSystem.GetBlockWithName("FSS - Air Vent") as IMyAirVent;
-
-    PrepareTextSurfaceForSprites(screen1);
-    PrepareTextSurfaceForSprites(screen2);
-    PrepareTextSurfaceForSprites(screen3);
 }
 
 public void Save() {}
@@ -42,9 +45,9 @@ public void Main(string argument, UpdateType updateSource) {
     float oxygenRate = GetOxygenLevel();
     float hydrogenRate = GetHydrogenLevel();
 
-    DrawRates(screen1, airRate, energyRate, oxygenRate, hydrogenRate);
-    DrawRates(screen2, airRate, energyRate, oxygenRate, hydrogenRate);
-    DrawRates(screen3, airRate, energyRate, oxygenRate, hydrogenRate);
+    foreach(IMyTextSurface surface in surfaces) {
+        DrawRates(surface, airRate, energyRate, oxygenRate, hydrogenRate);
+    }
 }
 
 private float GetEnergyLevel() {
