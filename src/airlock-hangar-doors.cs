@@ -35,6 +35,8 @@ public void Main(string argument) {
         lightIn = GridTerminalSystem.GetBlockWithName(name + " Light Inside") as IMyLightingBlock;
         lightOut = GridTerminalSystem.GetBlockWithName(name + " Light Outside") as IMyLightingBlock;
 
+        Echo((doorIn2 == null).ToString());
+
         timer = GridTerminalSystem.GetBlockWithName(name + " Timer Block") as IMyTimerBlock;
         timer.TriggerDelay = time;
 
