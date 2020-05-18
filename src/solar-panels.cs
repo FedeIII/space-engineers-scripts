@@ -5,6 +5,7 @@ List<IMyMotorStator> solarMainRotors = new List<IMyMotorStator>();
 List<IMyMotorStator> solarRotors = new List<IMyMotorStator>();
 List<IMyExtendedPistonBase> masts = new List<IMyExtendedPistonBase>();
 List<IMyExtendedPistonBase> catwalk = new List<IMyExtendedPistonBase>();
+List<IMyReflectorLight> lights = new List<IMyReflectorLight>();
 IMyTimerBlock openingTimer;
 IMyTimerBlock turningTimer;
 IMyTimerBlock extendingTimer;
@@ -16,6 +17,7 @@ public Program() {
     GridTerminalSystem.GetBlocksOfType<IMyMotorStator>(solarRotors, rotor => rotor.CustomName.Contains("FSS - Solar Rotor"));
     GridTerminalSystem.GetBlocksOfType<IMyExtendedPistonBase>(masts, piston => piston.CustomName.Contains("FSS - Solar Piston"));
     GridTerminalSystem.GetBlocksOfType<IMyExtendedPistonBase>(catwalk, piston => piston.CustomName.Contains("FSS - Solar Catwalk Piston"));
+    GridTerminalSystem.GetBlocksOfType<IMyReflectorLight>(lights, light => light.CustomName.Contains("FSS - Solar Panel Light"));
     program = GridTerminalSystem.GetBlockWithName("Solar Panels Logic") as IMyProgrammableBlock;
     openingTimer = GridTerminalSystem.GetBlockWithName("FSS - Solar Panels Timer Open") as IMyTimerBlock;
     turningTimer = GridTerminalSystem.GetBlockWithName("FSS - Solar Panels Timer Turn") as IMyTimerBlock;
@@ -84,6 +86,7 @@ public void Main(string action, UpdateType updateSource) {
 
 private void ClosedState(string action) {
     OpenDoors();
+    ToggleLights();
 }
 
 private void OpeningState(string action) {
@@ -97,6 +100,7 @@ private void OpeningState(string action) {
 private void ClosingState(string action) {
     if (action != null) {
         program.CustomData = State.Closed.ToString();
+        ToggleLights();
     } else {
         OpenDoors();
     }
@@ -137,6 +141,7 @@ private void RetractingState(string action) {
 private void DeployingState(string action) {
     if (action != null) {
         program.CustomData = State.Deployed.ToString();
+        ToggleLights();
     } else {
        CollectPanels();
     }
@@ -152,6 +157,7 @@ private void CollectingState(string action) {
 
 private void DeployedState(string action) {
     CollectPanels();
+    ToggleLights();
 }
 
 // OPEN
@@ -232,6 +238,12 @@ private void CloseDoors() {
 }
 
 // TOGGLE
+
+private void ToggleLights() {
+    foreach(IMyReflectorLight light in lights) {
+        light.Enabled = !light.Enabled;
+    }
+}
 
 private void ToogleCatwalk() {
     foreach(IMyExtendedPistonBase piston in catwalk) {

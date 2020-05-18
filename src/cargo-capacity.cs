@@ -7,9 +7,13 @@ IMyTextSurfaceProvider block1;
 IMyTextSurfaceProvider block2;
 IMyInteriorLight light;
 List <IMyCargoContainer> cargos = new List<IMyCargoContainer>();
+List <IMyShipDrill> drills = new List<IMyShipDrill>();
 
 public Program() {
     Runtime.UpdateFrequency = UpdateFrequency.Update1;
+
+    GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(cargos, cargo => cargo.IsSameConstructAs(Me));
+    GridTerminalSystem.GetBlocksOfType<IMyShipDrill>(drills, drill => drill.IsSameConstructAs(Me));
 
     light =  GridTerminalSystem.GetBlockWithName("Hulk - Cargo Light") as IMyInteriorLight;
 
@@ -26,7 +30,6 @@ public Program() {
 public void Save() {}
 
 public void Main(string argument, UpdateType updateSource) {
-    GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(cargos);
     float cargoRate = GetCargoRate();
 
     Echo("Cargo: " + cargoRate.ToString() + "%");
@@ -44,6 +47,19 @@ private float GetCargoRate() {
     foreach (IMyCargoContainer cargo in cargos) {
         Echo("Cargo: " + cargo.Name);
         IMyInventory inventory = cargo.GetInventory();
+        inventory.GetItems(items);
+
+        foreach(MyInventoryItem item in items) {
+            Echo("   - " + item.Type);
+        }
+
+        maxCargo += inventory.MaxVolume.ToIntSafe();
+        currentCargo += inventory.CurrentVolume.ToIntSafe();
+    }
+
+    foreach (IMyCargoContainer drill in drills) {
+        Echo("Drill: " + drill.Name);
+        IMyInventory inventory = drill.GetInventory();
         inventory.GetItems(items);
 
         foreach(MyInventoryItem item in items) {
