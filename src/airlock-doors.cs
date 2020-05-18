@@ -3,7 +3,8 @@ string [] names = {
     "Hangar",
     "Command",
     "Power",
-    "Engines"
+    "Engines",
+    "Solar"
 };
 
 // {name} Door Inside
@@ -111,7 +112,7 @@ private void SetLightState(
         }
     }
 
-    if (lightIn != null) {
+    if (lightIn != null && lightOut != null) {
         if (
             doorIn.Status == DoorStatus.Opening
             || doorIn.Status == DoorStatus.Open
@@ -120,9 +121,7 @@ private void SetLightState(
         } else {
             lightOut.Color = colorGreen;
         }
-    }
 
-    if (lightOut != null) {
         if (
             doorOut.Status == DoorStatus.Opening
             || doorOut.Status == DoorStatus.Open
