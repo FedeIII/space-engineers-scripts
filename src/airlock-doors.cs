@@ -4,7 +4,8 @@ string [] names = {
     "Command",
     "Power",
     "Engines",
-    "Solar"
+    "Solar",
+    "Nuclear"
 };
 
 // {name} Door Inside

@@ -37,7 +37,7 @@ public Program() {
         PrepareTextSurfaceForSprites(surface);
     }
 
-    airVent = GridTerminalSystem.GetBlockWithName("FSS - Air Vent") as IMyAirVent;
+    airVent = GridTerminalSystem.GetBlockWithName("FSS - Infirmary Air Vent") as IMyAirVent;
     alarm = GridTerminalSystem.GetBlockWithName("FSS - Alarm Light") as IMyReflectorLight;
 }
 

@@ -6,6 +6,7 @@ Color highColor =  new Color(150, 0, 0, 255);
 IMyTextSurfaceProvider block1;
 IMyTextSurfaceProvider block2;
 IMyInteriorLight light;
+IMyInteriorLight backLight;
 List <IMyCargoContainer> cargos = new List<IMyCargoContainer>();
 List <IMyShipDrill> drills = new List<IMyShipDrill>();
 
@@ -15,7 +16,8 @@ public Program() {
     GridTerminalSystem.GetBlocksOfType<IMyCargoContainer>(cargos, cargo => cargo.IsSameConstructAs(Me));
     GridTerminalSystem.GetBlocksOfType<IMyShipDrill>(drills, drill => drill.IsSameConstructAs(Me));
 
-    light =  GridTerminalSystem.GetBlockWithName("Hulk - Cargo Light") as IMyInteriorLight;
+    light = GridTerminalSystem.GetBlockWithName("Hulk - Cargo Light") as IMyInteriorLight;
+    backLight = GridTerminalSystem.GetBlockWithName("Hulk - Light Back") as IMyInteriorLight;
 
     block1 = GridTerminalSystem.GetBlockWithName("Hulk - Cockpit") as IMyTextSurfaceProvider;
     IMyTextSurface screen1 = block1.GetSurface(0);
@@ -57,7 +59,7 @@ private float GetCargoRate() {
         currentCargo += inventory.CurrentVolume.ToIntSafe();
     }
 
-    foreach (IMyCargoContainer drill in drills) {
+    foreach (IMyShipDrill drill in drills) {
         Echo("Drill: " + drill.Name);
         IMyInventory inventory = drill.GetInventory();
         inventory.GetItems(items);
@@ -121,6 +123,7 @@ private void DrawSprites(ref MySpriteDrawFrame frame, IMyTextSurfaceProvider blo
 
 private void SetLight(float rate) {
     light.Color = GetCargoColor(rate);
+    backLight.Color = GetCargoColor(rate);
 }
 
 private Color GetCargoColor(float rate) {
