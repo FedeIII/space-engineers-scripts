@@ -1,4 +1,3 @@
-const int PERIOD = 5; // seconds
 const int MAX_INGOTS = 2000; // kg
 const int MAX_ORES = 2000; // kg
 
@@ -16,7 +15,7 @@ List<IMyInventory> rawMaterials = new List<IMyInventory>();
 int loop = 0;
 bool flag = false;
 
-List<string> logs = new List<string>();
+// List<string> logs = new List<string>();
 
 public Program() {
     Runtime.UpdateFrequency = UpdateFrequency.Update100;
@@ -51,7 +50,7 @@ private void initAssemblers() {
     assemblerComponents = mainAssembler.GetInventory(0);
 
     List<IMyAssembler> assemblers = new List<IMyAssembler>();
-    GridTerminalSystem.GetBlocksOfType<IMyAssembler>(assemblers);
+    GridTerminalSystem.GetBlocksOfType<IMyAssembler>(assemblers, assembler => assembler.IsSameConstructAs(Me));
     
     foreach(IMyAssembler assembler in assemblers) {
         assemblersComponents.Add(assembler.GetInventory(1));
@@ -67,9 +66,7 @@ private void initTools() {
 
 private void initRefineries() {
     List<IMyRefinery> refineries = new List<IMyRefinery>();
-    IMyRefinery mainRefinery = GridTerminalSystem.GetBlockWithName("FSS - Main Refinery") as IMyRefinery;
-
-    refineries.Add(mainRefinery);
+    GridTerminalSystem.GetBlocksOfType<IMyRefinery>(refineries, refinery => refinery.IsSameConstructAs(Me));
 
     foreach(IMyRefinery refinery in refineries) {
         refineryOres.Add(refinery.GetInventory(0));
@@ -106,12 +103,12 @@ public void Main(string argument, UpdateType updateSource) {
     Echo("rawMaterials: " + rawMaterials.Count);
     Echo("");
 
-    foreach(string log in logs) Echo(log);
+    // foreach(string log in logs) Echo(log);
     Echo("");
 
     UpdateLoop();
 
-    if (loop == PERIOD) {
+    if (loop == int.Parse(Me.CustomData)) {
         MoveItems();
     }
 }
@@ -119,7 +116,7 @@ public void Main(string argument, UpdateType updateSource) {
 private void UpdateLoop() {
     loop += 1;
 
-    if (loop > PERIOD) {
+    if (loop > int.Parse(Me.CustomData)) {
         loop = 0;
     }
 }
@@ -274,14 +271,14 @@ private bool MoveItem(MyInventoryItem item, IMyInventory from, IMyInventory to) 
     }
 
     if (to.IsFull) {
-        logs.Add("Not Moving " + ItemName(item));
-        logs.Add("destination full: " + OwnerName(to));
+        // logs.Add("Not Moving " + ItemName(item));
+        // logs.Add("destination full: " + OwnerName(to));
         return true;
     } else {
-        logs.Add("Moving " + ItemName(item) + " from:");
-        logs.Add("   " + OwnerName(from));
-        logs.Add("to:");
-        logs.Add("   " + OwnerName(to));
+        // logs.Add("Moving " + ItemName(item) + " from:");
+        // logs.Add("   " + OwnerName(from));
+        // logs.Add("to:");
+        // logs.Add("   " + OwnerName(to));
         from.TransferItemTo(to, item);
         flag = true;
         return false;
