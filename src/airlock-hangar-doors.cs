@@ -1,6 +1,4 @@
-public Program() {
-    Runtime.UpdateFrequency = UpdateFrequency.Update10;
-}
+public Program() {}
 
 public void Save() {}
 
@@ -35,9 +33,17 @@ public void Main(string argument) {
         lightIn = GridTerminalSystem.GetBlockWithName(name + " Light Inside") as IMyLightingBlock;
         lightOut = GridTerminalSystem.GetBlockWithName(name + " Light Outside") as IMyLightingBlock;
 
+        Echo((doorIn1 == null).ToString());
         Echo((doorIn2 == null).ToString());
+        Echo((doorOut1 == null).ToString());
+        Echo((doorOut2 == null).ToString());
 
-        timer = GridTerminalSystem.GetBlockWithName(name + " Timer Block") as IMyTimerBlock;
+        Echo((light1 == null).ToString());
+        Echo((light2 == null).ToString());
+        Echo((lightIn == null).ToString());
+        Echo((lightOut == null).ToString());
+
+        timer = GridTerminalSystem.GetBlockWithName("Pad Timer Block") as IMyTimerBlock;
         timer.TriggerDelay = time;
 
         SetDoorsState(doorIn1, doorIn2, doorOut1, doorOut2, light1, light2, timer);

@@ -55,13 +55,15 @@ private void DrawConnections(IMyTextSurface screen) {
 
 private void DrawSprites(ref MySpriteDrawFrame frame, IMyTextSurface screen) {
     RectangleF viewport =  GetViewPort(screen);
-    float lineGap = viewport.Height / connectors.Count;
     float widthRatio = viewport.Width / BASE_WIDTH;
-    float heightRatio = viewport.Width / BASE_HEIGHT;
+    float heightRatio = viewport.Height / BASE_HEIGHT;
     float fontSize = FONT_SIZE * widthRatio;
     float padding = PADD * heightRatio;
     float titlePadding = TITLE_PADD * heightRatio;
     float shipPadding = SHIP_PADD * heightRatio;
+    float lineGap = viewport.Height / connectors.Count;
+    float maxLineGap = 0.3f * viewport.Height;
+    lineGap = lineGap > maxLineGap ? maxLineGap : lineGap;
 
     var position = new Vector2(padding, padding) + viewport.Position;
     frame.Add(new MySprite() {
@@ -124,7 +126,7 @@ private string GetShip(IMyShipConnector connector) {
     IMyShipConnector otherConnector = connector.OtherConnector;
 
     if (otherConnector == null) {
-        return "no ship (" + connector.CustomName + ")";
+        return "No ship (" + connector.CustomName + ")";
     }
 
     return otherConnector.CubeGrid.CustomName + " (" + connector.CustomName + ")";
